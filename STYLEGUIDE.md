@@ -1,19 +1,17 @@
 # Style Guide
 
 ## 设计参考
-- [参考网站1 URL] — 借鉴要素（配色/布局/卡片/字体/间距）
-- [参考网站2 URL] — 借鉴要素
-
-## DaisyUI Theme
-`data-theme="DAISY_THEME"` — 在 layout.tsx 中设置
+- [skateparks.com.au](https://skateparks.com.au) — Competitor (currently down/500). Dark theme, park directory layout
+- [thrashermagazine.com](https://thrashermagazine.com) — Skate culture aesthetic, bold typography, dark theme
+- [concrete-skateparks.com.au](https://concrete-skateparks.com.au) — Park builder site, gallery-driven layout
 
 ## 配色方案
-- Primary: #2563eb (修改 globals.css @theme)
-- Secondary: #7c3aed
-- Accent: #f59e0b
+DaisyUI theme: **night** — Dark theme matching skate culture aesthetic. High contrast cards on dark background.
 
 ## 设计决策
-- [ ] 卡片风格：
-- [ ] 布局模式：
-- [ ] 字体层级：
-- [ ] 间距规范：
+- Dark theme to match skate/street culture vibe
+- Card-based park listings with badges for features (surface, lighting, accessibility)
+- Interactive Leaflet maps on every page (home, state, individual park)
+- Clean typography, minimal decoration, data-focused
+- Breadcrumb navigation for SEO and usability
+- Nearby parks section on each park page for internal linking

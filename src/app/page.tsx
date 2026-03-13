@@ -1,61 +1,112 @@
+import parks from "@/data/skateparks.json";
+import Link from "next/link";
+import MapView from "@/components/MapView";
+
+const states = [
+  { code: "NSW", name: "New South Wales" },
+  { code: "VIC", name: "Victoria" },
+  { code: "QLD", name: "Queensland" },
+  { code: "WA", name: "Western Australia" },
+  { code: "SA", name: "South Australia" },
+  { code: "TAS", name: "Tasmania" },
+  { code: "ACT", name: "Australian Capital Territory" },
+  { code: "NT", name: "Northern Territory" },
+];
+
 export default function Home() {
+  const stateCounts = states.map((s) => ({
+    ...s,
+    count: parks.filter((p) => p.state === s.code).length,
+  }));
+
+  const featured = parks.filter((p) => p.name).slice(0, 12);
+
+  const markers = parks.map((p) => ({
+    lat: p.lat,
+    lng: p.lon,
+    label: p.name || `Skatepark ${p.id}`,
+    href: `/park/${p.slug}`,
+  }));
+
   return (
-    <div className="space-y-12">
+    <>
       {/* Hero */}
-      <section className="hero min-h-[40vh] bg-base-200 rounded-box">
-        <div className="hero-content text-center">
-          <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold">SITE_TITLE</h1>
-            <p className="py-6 text-lg text-base-content/70">SITE_DESCRIPTION</p>
-            {/* Search bar scaffold */}
-            <div className="form-control w-full max-w-lg mx-auto">
-              <div className="input-group flex">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="input input-bordered flex-1"
-                />
-                <button className="btn btn-primary">Search</button>
-              </div>
-            </div>
+      <section className="bg-gradient-to-br from-neutral to-base-300 py-16 px-4">
+        <div className="container mx-auto text-center">
+          <h1 className="text-5xl font-extrabold mb-4">
+            🛹 Every Skatepark in Australia
+          </h1>
+          <p className="text-xl text-base-content/70 mb-6 max-w-2xl mx-auto">
+            {parks.length.toLocaleString()} skateparks and skate spots across all states and territories.
+            Find your next session.
+          </p>
+          <div className="flex justify-center gap-3">
+            <Link href="/states" className="btn btn-primary btn-lg">
+              Browse by State
+            </Link>
+            <Link href="/map" className="btn btn-outline btn-lg">
+              View Map
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Stats scaffold */}
-      <section className="stats stats-vertical lg:stats-horizontal shadow w-full">
-        <div className="stat">
-          <div className="stat-title">Total Records</div>
-          <div className="stat-value">0</div>
-          <div className="stat-desc">From public data sources</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">Categories</div>
-          <div className="stat-value">0</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">Last Updated</div>
-          <div className="stat-value text-lg">2026</div>
-        </div>
-      </section>
-
-      {/* Card grid scaffold */}
-      <section>
-        <h2 className="text-2xl font-bold mb-6">Browse</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300">
-              <div className="card-body">
-                <h3 className="card-title">Item {i}</h3>
-                <p className="text-base-content/60">Description placeholder</p>
-                <div className="card-actions justify-end">
-                  <a className="btn btn-primary btn-sm">View Details</a>
+      {/* States Grid */}
+      <section className="container mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-6">Browse by State</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stateCounts.map((s) => (
+            <Link
+              key={s.code}
+              href={`/state/${s.code.toLowerCase()}`}
+              className="card bg-base-200 hover:bg-base-300 transition shadow-md"
+            >
+              <div className="card-body items-center text-center p-4">
+                <h3 className="card-title text-lg">{s.code}</h3>
+                <p className="text-sm text-base-content/60">{s.name}</p>
+                <div className="badge badge-primary badge-lg mt-1">
+                  {s.count} parks
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
-    </div>
+
+      {/* Map Preview */}
+      <section className="container mx-auto px-4 py-8">
+        <h2 className="text-3xl font-bold mb-4">All Skateparks</h2>
+        <div className="rounded-xl overflow-hidden shadow-lg">
+          <MapView markers={markers} zoom={4} height="500px" />
+        </div>
+      </section>
+
+      {/* Featured Parks */}
+      <section className="container mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-6">Featured Skateparks</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {featured.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/park/${p.slug}`}
+              className="card bg-base-200 hover:bg-base-300 transition shadow"
+            >
+              <div className="card-body p-4">
+                <h3 className="card-title text-base">{p.name}</h3>
+                <p className="text-sm text-base-content/60">{p.state_name}</p>
+                <div className="flex gap-2 flex-wrap mt-1">
+                  {p.surface && (
+                    <span className="badge badge-sm badge-outline">{p.surface}</span>
+                  )}
+                  {p.lit === "yes" && (
+                    <span className="badge badge-sm badge-warning">💡 Lit</span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
